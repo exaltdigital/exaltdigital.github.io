@@ -309,10 +309,7 @@
         </div>
         <div>
           <label class="input-label" style="color:#888;">How much do you want to spend? (AUD)</label>
-          <div class="amt-wrap">
-            <span class="amt-prefix">A$</span>
-            <input type="number" class="site-input amt-input" id="boost-amount" placeholder="150" min="10" />
-          </div>
+          <input type="number" class="site-input" id="boost-amount" placeholder="e.g. 150" min="10" />
         </div>
       </div>
       <div class="boost-result">
@@ -370,7 +367,7 @@
   var boostVis = document.getElementById('boost-visitors');
 
   function calcVisitors(n) {
-    return Math.round((n <= 500 ? n * 250 : 125000 + (n - 500) * 180) / 100) * 100;
+    return Math.round((n <= 500 ? n * 20 : 10000 + (n - 500) * 14) / 10) * 10;
   }
   boostAmt.addEventListener('input', function() {
     var n = parseInt(this.value) || 0;
