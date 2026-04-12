@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exalt Digital — Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0a0a0f; color: #e2e2e8;
+      font-size: 14px; line-height: 1.5;
+    }
+
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; gap: 1rem;
+    }
+    header h1 { font-size: 1rem; font-weight: 700; }
+    .live { display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.75rem; color: #22c55e; margin-left: auto; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e;
+      animation: blink 2s infinite; }
+    @keyframes blink {
+      0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+
+    .stats {
+      display: flex; gap: 1px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.04);
+    }
+    .stat {
+      flex: 1; padding: 1.25rem 2rem;
+      background: #0a0a0f;
+    }
+    .stat-val { font-size: 1.8rem; font-weight: 800; color: #fff; }
+    .stat-lbl { font-size: 0.72rem; color: #666; margin-top: 0.1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    .feed-wrap { padding: 1.5rem 2rem; }
+    .feed-hdr {
+      font-size: 0.7rem; font-weight: 700; color: #555;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    thead th {
+      text-align: left; padding: 0.5rem 0.75rem;
+      font-size: 0.68rem; font-weight: 600; color: #555;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background .1s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+    tbody tr.new { animation: flash 1.2s ease forwards; }
+    @keyframes flash {
+      0%   { background: rgba(124,111,255,0.15); }
+      100% { background: transparent; }
+    }
+    td { padding: 0.6rem 0.75rem; font-size: 0.82rem; color: #a0a0b0; }
+    td.path { color: #e2e2e8; font-weight: 600; max-width: 220px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    td.time { color: #555; font-size: 0.75rem; white-space: nowrap; }
+    .chip {
+      display: inline-block; background: rgba(124,111,255,0.12);
+      border: 1px solid rgba(124,111,255,0.2); color: #a78bfa;
+      font-size: 0.68rem; padding: 0.1rem 0.45rem; border-radius: 4px;
+    }
+
+    #empty {
+      text-align: center; padding: 4rem 2rem;
+      color: #444; font-size: 0.9rem;
+    }
+    #empty strong { display: block; font-size: 1rem; color: #666; margin-bottom: 0.4rem; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Exalt Digital &nbsp;/&nbsp; Activity</h1>
+  <div class="live"><div class="dot"></div> Live</div>
+</header>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-val" id="s-total">—</div>
+    <div class="stat-lbl">Total visits</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="s-today">—</div>
+    <div class="stat-lbl">Today</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="s-sessions">—</div>
+    <div class="stat-lbl">Unique sessions</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="s-hour">—</div>
+    <div class="stat-lbl">Last hour</div>
+  </div>
+</div>
+
+<div class="feed-wrap">
+  <div class="feed-hdr">Recent visits</div>
+  <div id="empty" style="display:none">
+    <strong>No visits yet</strong>
+    Add the embed script to your site to start tracking.
+  </div>
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th>Page</th>
+        <th>Browser</th>
+        <th>Device</th>
+        <th>OS</th>
+        <th>Referrer</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+  var URL = 'https://gczopudgxfciatvtxhll.supabase.co';
+  var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjem9wdWRneGZjaWF0dnR4aGxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NzgwMzgsImV4cCI6MjA5MTU1NDAzOH0.Qc4hAZ0AqFAgNcPcRkNk2SUvs4uR2hwk9m2JeZ7lIV0';
+
+  var db   = supabase.createClient(URL, KEY);
+  var rows = [];
+
+  function ago(iso) {
+    var s = Math.floor((Date.now() - new Date(iso)) / 1000);
+    if (s < 10)   return 'just now';
+    if (s < 60)   return s + 's ago';
+    if (s < 3600) return Math.floor(s/60) + 'm ago';
+    if (s < 86400)return Math.floor(s/3600) + 'h ago';
+    return new Date(iso).toLocaleDateString();
+  }
+
+  function ref(r) {
+    if (!r) return '—';
+    try { return new URL(r).hostname.replace(/^www\./,''); }
+    catch(e) { return '—'; }
+  }
+
+  function renderStats() {
+    var now   = new Date();
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var hour  = new Date(now - 3600000);
+    document.getElementById('s-total').textContent    = rows.length;
+    document.getElementById('s-today').textContent    = rows.filter(function(r){ return new Date(r.created_at) >= today; }).length;
+    document.getElementById('s-sessions').textContent = new Set(rows.map(function(r){ return r.session_id; })).size;
+    document.getElementById('s-hour').textContent     = rows.filter(function(r){ return new Date(r.created_at) >= hour; }).length;
+  }
+
+  function renderRow(r, isNew) {
+    return '<tr class="' + (isNew ? 'new' : '') + '">' +
+      '<td class="path" title="' + (r.url||'') + '">' + (r.path || '/') + '</td>' +
+      '<td>' + (r.browser || '—') + '</td>' +
+      '<td>' + (r.device_type || '—') + '</td>' +
+      '<td>' + (r.os || '—') + '</td>' +
+      '<td>' + (ref(r.referrer) !== location.hostname ? '<span class="chip">' + ref(r.referrer) + '</span>' : '—') + '</td>' +
+      '<td class="time">' + ago(r.created_at) + '</td>' +
+      '</tr>';
+  }
+
+  function renderTable(highlightFirst) {
+    var tbody = document.getElementById('tbody');
+    var empty = document.getElementById('empty');
+    var tbl   = document.getElementById('tbl');
+    if (!rows.length) {
+      tbl.style.display = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    tbl.style.display = '';
+    empty.style.display = 'none';
+    tbody.innerHTML = rows.slice(0, 100).map(function(r, i){
+      return renderRow(r, i === 0 && highlightFirst);
+    }).join('');
+  }
+
+  async function load() {
+    var res = await db.from('page_views').select('*').order('created_at', { ascending: false }).limit(200);
+    if (res.error) { console.error(res.error); return; }
+    rows = res.data || [];
+    renderStats();
+    renderTable(false);
+  }
+
+  // Realtime
+  db.channel('pv')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'page_views' }, function(p) {
+      rows.unshift(p.new);
+      renderStats();
+      renderTable(true);
+    })
+    .subscribe();
+
+  // Refresh time-ago labels every 30s
+  setInterval(function(){ renderTable(false); }, 30000);
+
+  load();
+</script>
+</body>
+</html>
