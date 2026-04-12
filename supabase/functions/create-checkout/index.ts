@@ -28,10 +28,13 @@ Deno.serve(async (req) => {
             ? `One-time campaign for ${siteUrl} — ${Number(visitors).toLocaleString()} estimated new visitors`
             : `One-time traffic campaign for ${siteUrl}`,
         },
-        unit_amount: Math.round(amount * 100),
+        unit_amount: Math.max(50, Math.round(amount * 100)),
       },
       quantity: 1,
     }],
+    payment_intent_data: {
+      statement_descriptor: 'EXALT DIGITAL SEO',
+    },
     mode: 'payment',
     success_url: 'https://exaltdigital.github.io/?boost=success&site=' + encodeURIComponent(siteUrl) + '&amount=' + amount + (visitors ? '&visitors=' + visitors : ''),
     cancel_url:  'https://exaltdigital.github.io/',

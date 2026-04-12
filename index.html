@@ -477,7 +477,7 @@
   // ── One-time boost button ─────────────────────────────────
   document.getElementById('boost-btn').addEventListener('click', function() {
     var siteInp = document.getElementById('boost-site');
-    var amt = parseInt(boostAmt.value) || 0;
+    var amt = parseInt(boostAmt.value) || 10;
     if (!requireSite(siteInp)) return;
 
     var btn = this;
@@ -509,6 +509,10 @@
   // ── Log boost on return from Stripe ──────────────────────
   var params = new URLSearchParams(window.location.search);
   if (params.get('boost') === 'success') {
+    var successSite = params.get('site') || 'unknown';
+    var successAmt  = parseFloat(params.get('amount')) || 0;
+    var successVis  = parseInt(params.get('visitors')) || 0;
+
     fetch('https://gczopudgxfciatvtxhll.supabase.co/rest/v1/boosts', {
       method: 'POST',
       headers: {
@@ -518,11 +522,20 @@
         'Prefer': 'return=minimal'
       },
       body: JSON.stringify({
-        site_url: params.get('site') || 'unknown',
-        amount: parseInt(params.get('amount')) || 0,
-        visitors_target: parseInt(params.get('visitors')) || 0
+        site_url: successSite,
+        amount: successAmt,
+        visitors_target: successVis
       })
     });
+
+    // Show success banner
+    var banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#22c55e;color:#fff;text-align:center;padding:1.2rem 1rem;font-size:1.1rem;font-weight:700;z-index:9999;box-shadow:0 2px 12px rgba(0,0,0,0.3);';
+    banner.innerHTML = '&#10003; Payment successful — your SEO boost for <strong>' + successSite + '</strong> is on its way!'
+      + (successVis ? ' Expect ~' + Number(successVis).toLocaleString() + ' new visitors.' : '')
+      + ' <span style="cursor:pointer;margin-left:1rem;opacity:0.7;" onclick="this.parentNode.remove()">&#10005;</span>';
+    document.body.prepend(banner);
+
     history.replaceState({}, '', '/');
   }
 </script>
