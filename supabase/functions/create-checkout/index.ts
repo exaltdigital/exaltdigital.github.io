@@ -15,7 +15,14 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
-  const { amount, siteUrl, visitors } = await req.json()
+  const { amount, siteUrl, keywords, location, userId } = await req.json()
+
+  const descParts = [
+    `One-time Google Ads campaign for ${siteUrl}`,
+    keywords ? `Keywords: ${keywords}` : null,
+    location ? `Location: ${location}` : null,
+    `Ad budget: A$${Math.round(amount * 0.75)} (75% goes directly to Google Ads)`,
+  ].filter(Boolean)
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -23,22 +30,29 @@ Deno.serve(async (req) => {
       price_data: {
         currency: 'aud',
         product_data: {
-          name: 'Exalt Digital — Instant SEO Boost',
-          description: visitors
-            ? `One-time campaign for ${siteUrl} — ${Number(visitors).toLocaleString()} estimated new visitors`
-            : `One-time traffic campaign for ${siteUrl}`,
+          name:        'Exalt Digital — Google Ads Campaign',
+          description: descParts.join(' · '),
         },
-        unit_amount: Math.max(50, Math.round(amount * 100)),
+        unit_amount: Math.max(1000, Math.round(amount * 100)), // minimum A$10
       },
       quantity: 1,
     }],
     payment_intent_data: {
-      statement_descriptor: 'EXALT DIGITAL SEO',
+      statement_descriptor: 'EXALT DIGITAL ADS',
     },
     mode: 'payment',
-    success_url: 'https://exaltdigital.github.io/?boost=success&site=' + encodeURIComponent(siteUrl) + '&amount=' + amount + (visitors ? '&visitors=' + visitors : ''),
+    // userId passed as client_reference_id so stripe-webhook can link to the user account
+    client_reference_id: userId || null,
+    success_url: 'https://exaltdigital.github.io/?boost=success&site=' + encodeURIComponent(siteUrl),
     cancel_url:  'https://exaltdigital.github.io/',
-    metadata: { site_url: siteUrl, type: 'one_time_boost' },
+    metadata: {
+      type:       'google_ads_campaign',
+      site_url:   siteUrl,
+      keywords:   keywords  || '',
+      location:   location  || '',
+      ad_budget:  String(Math.round(amount * 0.75)),
+      user_id:    userId    || '',
+    },
   })
 
   return new Response(JSON.stringify({ url: session.url }), {

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About Exalt Digital — a solo Australian SEO service focused on steady, honest growth." />
+  <title>About — Exalt Digital</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f8f8f8; color: #111; font-size: 18px; line-height: 1.6; }
+
+    header {
+      background: #111; color: #fff;
+      padding: 1.25rem 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .logo a { font-size: 1.4rem; font-weight: 800; text-decoration: none; color: #fff; }
+    .logo span { color: #a78bfa; }
+    .site-nav { display: flex; align-items: center; gap: 1.5rem; flex: 1; justify-content: center; }
+    .site-nav a { color: #aaa; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: color .15s; }
+    .site-nav a:hover, .site-nav a.active { color: #fff; }
+    .header-nav { display: flex; align-items: center; gap: 0.75rem; }
+    .header-btn { padding: 0.45rem 1.1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: opacity .15s; }
+    .header-btn:hover { opacity: 0.8; }
+    .header-btn-outline { border: 1px solid #444; color: #ccc; background: none; }
+    .header-btn-fill { background: #7c6fff; color: #fff; border: none; }
+
+    .page-hero {
+      background: #fff; border-bottom: 2px solid #eee;
+      padding: 3.5rem 5% 2.5rem; text-align: center;
+    }
+    .page-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; margin-bottom: 0.75rem; }
+    .page-hero h1 span { color: #7c6fff; }
+    .page-hero p { font-size: 1.1rem; color: #555; max-width: 560px; margin: 0 auto; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 3rem 5%; }
+
+    .about-block { margin-bottom: 2.5rem; }
+    .about-block h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .about-block p { color: #444; font-size: 1rem; margin-bottom: 0.75rem; }
+
+    .values {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin: 2rem 0;
+    }
+    .value {
+      background: #fff; border: 2px solid #e5e5e5;
+      border-radius: 14px; padding: 1.5rem;
+    }
+    .value-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .value h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .value p { font-size: 0.85rem; color: #666; }
+
+    .cta-band {
+      background: #111; color: #fff;
+      padding: 3rem 5%; text-align: center;
+    }
+    .cta-band h2 { font-size: 1.6rem; font-weight: 900; margin-bottom: 0.5rem; }
+    .cta-band p { color: #aaa; margin-bottom: 1.5rem; font-size: 1rem; }
+    .cta-btn {
+      display: inline-block; background: #7c6fff; color: #fff;
+      padding: 0.9rem 2rem; border-radius: 12px;
+      font-size: 1rem; font-weight: 800; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(124,111,255,0.35);
+      transition: opacity .15s;
+    }
+    .cta-btn:hover { opacity: 0.88; }
+
+    footer {
+      background: #111; color: #666;
+      padding: 1.5rem 5%; text-align: center; font-size: 0.85rem;
+    }
+    footer span { color: #a78bfa; font-weight: 700; }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      header { padding: 1rem 4%; }
+      .site-nav { order: 3; width: 100%; justify-content: flex-start; gap: 1rem; }
+      .content { padding: 2rem 4%; }
+      .values { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><a href="/">Exalt <span>Digital</span></a></div>
+  <nav class="site-nav">
+    <a href="/about.html" class="active">About</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+  <nav class="header-nav" id="header-nav">
+    <a href="/login.html" class="header-btn header-btn-outline">Sign in</a>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h1>Built on <span>honest work.</span></h1>
+  <p>Exalt Digital is a solo Australian SEO service focused on steady, long-term improvement — not shortcuts, not promises we can't keep.</p>
+</div>
+
+<div class="content">
+
+  <div class="about-block">
+    <h2>Why I started this</h2>
+    <p>Most small websites are almost invisible in search results — not because what they offer isn't valuable, but because Google never got a clear enough picture of what they do.</p>
+    <p>I started Exalt Digital to fix that. One website at a time, with consistent monthly work that compounds over time. No agency overhead, no locked-in contracts, no inflated promises.</p>
+  </div>
+
+  <div class="about-block">
+    <h2>How I work</h2>
+    <p>Every client gets real attention. I look at your site, understand your audience, and make improvements that help Google understand what you offer — and show it to the right people.</p>
+    <p>You get a plain English update each month. No dashboard full of metrics you don't understand. Just a clear summary of what was done, what moved, and what's coming next.</p>
+  </div>
+
+  <div class="values">
+    <div class="value">
+      <div class="value-icon">&#9679;</div>
+      <h4>Honesty over hype</h4>
+      <p>SEO takes time. I'll never tell you otherwise.</p>
+    </div>
+    <div class="value">
+      <div class="value-icon">&#9679;</div>
+      <h4>Consistent effort</h4>
+      <p>Every month, real work gets done on your site.</p>
+    </div>
+    <div class="value">
+      <div class="value-icon">&#9679;</div>
+      <h4>Long-term thinking</h4>
+      <p>Built to compound — not just quick wins that fade.</p>
+    </div>
+    <div class="value">
+      <div class="value-icon">&#9679;</div>
+      <h4>Plain communication</h4>
+      <p>No jargon. You'll always know what I'm doing and why.</p>
+    </div>
+  </div>
+
+  <div class="about-block">
+    <h2>Who this is for</h2>
+    <p>Exalt Digital works best for small Australian businesses, solo operators, authors, and purpose-driven websites that want to grow their search presence steadily over time — without the overhead of a full agency.</p>
+    <p>If you want fast results with no effort, this probably isn't the right fit. If you're willing to commit for 6–12 months and want someone who will show up every month and do the work — let's talk.</p>
+  </div>
+
+</div>
+
+<div class="cta-band">
+  <h2>Ready to grow your visibility?</h2>
+  <p>See the plans and get started in under two minutes.</p>
+  <a href="/" class="cta-btn">View pricing &rarr;</a>
+</div>
+
+<footer>
+  &copy; 2026 <span>Exalt Digital</span>. All rights reserved.
+</footer>
+
+<script>
+  var cfg = window.ExaltConfig
+  var sb  = window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey)
+  var currentUser = null
+  sb.auth.getSession().then(function(r) {
+    currentUser = r.data.session ? r.data.session.user : null
+    var nav = document.getElementById('header-nav')
+    if (currentUser) {
+      var siteUrl = currentUser.user_metadata && currentUser.user_metadata.site_url
+      var siteChip = siteUrl ? '<a href="' + (siteUrl.startsWith('http') ? siteUrl : 'https://' + siteUrl) + '" target="_blank" rel="noopener" class="header-btn header-btn-outline" style="color:#a78bfa;border-color:#4c3f8a;">' + siteUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '') + ' ↗</a>' : ''
+      nav.innerHTML = siteChip + '<a href="/dashboard.html" class="header-btn header-btn-outline">My orders</a>'
+    } else {
+      nav.innerHTML = '<a href="/login.html" class="header-btn header-btn-outline">Sign in</a>'
+        + '<a href="/login.html" class="header-btn header-btn-fill">Get started</a>'
+    }
+  })
+</script>
+</body>
+</html>

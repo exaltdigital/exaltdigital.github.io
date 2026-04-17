@@ -216,7 +216,7 @@
     tbl.style.display = '';
     empty.style.display = 'none';
 
-    tbody.innerHTML = rows.slice(0, 100).map(function(r, i) {
+    tbody.innerHTML = rows.slice(0, 500).map(function(r, i) {
       var from = camefrom(r.referrer);
       return '<tr class="' + (i === 0 && highlightFirst ? 'new-row' : '') + '">' +
         '<td class="page-col">' + (r.path || '/') + '</td>' +
@@ -230,7 +230,7 @@
 
   async function load() {
     try {
-      var res = await db.from('page_views').select('*').order('created_at', { ascending: false }).limit(500);
+      var res = await db.from('page_views').select('*').order('created_at', { ascending: false }).limit(5000);
       if (res.error) { console.error('Supabase error:', res.error); return; }
       rows = res.data || [];
       renderStats();

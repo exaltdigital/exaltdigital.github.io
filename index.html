@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exalt Digital — SEO Growth</title>
+  <meta name="description" content="Exalt Digital — Ongoing SEO for Australian websites. Steady, honest improvement in search visibility. No lock-in contracts." />
+  <title>Exalt Digital — SEO for Australian Businesses</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -15,123 +18,196 @@
     /* ── Header ── */
     header {
       background: #111; color: #fff;
-      padding: 1.5rem 5%;
+      padding: 1.1rem 5%;
       display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; flex-wrap: wrap;
     }
-    .logo { font-size: 1.4rem; font-weight: 800; }
+    .logo { font-size: 1.35rem; font-weight: 800; flex-shrink: 0; }
+    .logo a { text-decoration: none; color: inherit; }
     .logo span { color: #a78bfa; }
+    .site-nav {
+      display: flex; align-items: center; gap: 1.5rem;
+      flex: 1; justify-content: center;
+    }
+    .site-nav a {
+      color: #aaa; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; transition: color .15s;
+    }
+    .site-nav a:hover { color: #fff; }
+    .header-nav { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+    .header-btn {
+      padding: 0.45rem 1.1rem; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: opacity .15s;
+    }
+    .header-btn:hover { opacity: 0.8; }
+    .header-btn-outline { border: 1px solid #444; color: #ccc; background: none; }
+    .header-btn-fill { background: #7c6fff; color: #fff; border: none; }
 
     /* ── Hero ── */
     .hero {
       text-align: center;
-      padding: 4rem 5% 3rem;
+      padding: 4.5rem 5% 3.5rem;
       background: #fff;
       border-bottom: 2px solid #eee;
     }
     .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 900; line-height: 1.15;
-      margin-bottom: 1rem;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 1.1rem;
     }
     .hero h1 span { color: #7c6fff; }
     .hero p {
-      font-size: 1.2rem; color: #555;
-      max-width: 540px; margin: 0 auto;
+      font-size: clamp(1rem, 2.5vw, 1.2rem); color: #555;
+      max-width: 600px; margin: 0 auto 2rem; line-height: 1.7;
+    }
+    .hero-badges {
+      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    }
+    .hero-badge {
+      background: #f0eeff; color: #7c6fff;
+      padding: 0.4rem 1rem; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+
+    /* ── Plain English explainer ── */
+    .plain-explain {
+      background: #fff;
+      padding: 3.5rem 5%;
+      border-bottom: 2px solid #eee;
+    }
+    .plain-explain-inner {
+      max-width: 900px; margin: 0 auto;
+    }
+    .plain-explain h2 {
+      text-align: center; font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 900; margin-bottom: 0.6rem;
+    }
+    .plain-explain h2 span { color: #7c6fff; }
+    .plain-explain .lead {
+      text-align: center; color: #555; font-size: 1rem;
+      max-width: 620px; margin: 0 auto 2.5rem; line-height: 1.7;
+    }
+    .explain-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .explain-step {
+      background: #f8f8f8; border-radius: 16px;
+      padding: 1.75rem 1.5rem; text-align: center;
+      border: 2px solid #eee;
+    }
+    .explain-step-icon {
+      width: 52px; height: 52px;
+      background: #f0eeff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin: 0 auto 1rem;
+    }
+    .explain-step h3 {
+      font-size: 1rem; font-weight: 800; margin-bottom: 0.5rem; color: #111;
+    }
+    .explain-step p {
+      font-size: 0.9rem; color: #555; line-height: 1.65;
+    }
+    .explain-arrow {
+      display: none;
     }
 
     /* ── Plans ── */
     .plans-section {
-      padding: 3rem 5%;
-      max-width: 1100px; margin: 0 auto;
+      padding: 3.5rem 5% 2.5rem;
+      background: #f8f8f8;
     }
     .plans-section h2 {
-      text-align: center; font-size: 1.8rem;
-      font-weight: 800; margin-bottom: 0.5rem;
+      text-align: center; font-size: clamp(1.5rem, 3vw, 1.9rem);
+      font-weight: 900; margin-bottom: 0.5rem;
     }
     .plans-section > p {
-      text-align: center; color: #666;
-      margin-bottom: 2.5rem; font-size: 1rem;
+      text-align: center; color: #555;
+      margin-bottom: 1rem; font-size: 1rem;
+      max-width: 600px; margin-left: auto; margin-right: auto;
     }
-
+    .plans-note {
+      text-align: center; font-size: 0.85rem; color: #777;
+      margin: 0 auto 2.5rem;
+      background: #fffbf0; border: 1px solid #ffe08a;
+      border-radius: 8px; padding: 0.75rem 1.5rem;
+      max-width: 600px;
+    }
     .plans {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-
     .plan {
       background: #fff;
       border: 2px solid #e5e5e5;
       border-radius: 16px;
-      padding: 2rem;
+      padding: 1.75rem 1.5rem;
       display: flex; flex-direction: column;
       transition: border-color .2s, box-shadow .2s;
+      position: relative;
     }
-    .plan:hover { border-color: #7c6fff; box-shadow: 0 4px 24px rgba(124,111,255,0.1); }
+    .plan:hover { border-color: #b5aaff; box-shadow: 0 4px 24px rgba(124,111,255,0.1); }
     .plan.best {
       border-color: #7c6fff;
-      box-shadow: 0 4px 32px rgba(124,111,255,0.2);
-      position: relative;
+      box-shadow: 0 6px 36px rgba(124,111,255,0.2);
     }
     .best-tag {
       position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
       background: #7c6fff; color: #fff;
-      font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;
-      text-transform: uppercase; padding: 0.3rem 1.2rem;
+      font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; padding: 0.3rem 1.1rem;
       border-radius: 999px; white-space: nowrap;
     }
-
     .plan-name {
-      font-size: 0.85rem; font-weight: 700; color: #999;
+      font-size: 0.78rem; font-weight: 700; color: #999;
       text-transform: uppercase; letter-spacing: 1.5px;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
     }
     .plan-price {
-      font-size: 3.5rem; font-weight: 900; line-height: 1;
-      margin-bottom: 0.25rem; display: flex; align-items: baseline; gap: 0.1rem;
+      font-size: 3rem; font-weight: 900; line-height: 1;
+      margin-bottom: 0.2rem; display: flex; align-items: baseline; gap: 0.1rem;
     }
-    .plan-price sup { font-size: 1.4rem; font-weight: 600; color: #777; }
-    .plan-per { font-size: 0.9rem; color: #999; margin-bottom: 1.25rem; }
-
+    .plan-price sup { font-size: 1.2rem; font-weight: 600; color: #777; }
+    .plan-per { font-size: 0.82rem; color: #999; margin-bottom: 1.1rem; }
     .plan-what {
-      font-size: 1rem; font-weight: 700; color: #111;
-      margin-bottom: 1rem; padding-bottom: 1rem;
-      border-bottom: 1px solid #eee;
+      font-size: 0.95rem; font-weight: 700; color: #111;
+      margin-bottom: 0.9rem; padding-bottom: 0.9rem;
+      border-bottom: 1px solid #eee; line-height: 1.4;
     }
-
     .plan-features {
-      list-style: none; flex: 1; margin-bottom: 1.5rem;
+      list-style: none; flex: 1; margin-bottom: 1.25rem;
     }
     .plan-features li {
-      font-size: 0.95rem; color: #444;
-      padding: 0.4rem 0; display: flex; gap: 0.6rem;
-      border-bottom: 1px solid #f2f2f2;
+      font-size: 0.88rem; color: #444;
+      padding: 0.35rem 0; display: flex; gap: 0.5rem; align-items: flex-start;
+      border-bottom: 1px solid #f5f5f5; line-height: 1.5;
     }
     .plan-features li:last-child { border-bottom: none; }
-    .tick { color: #22c55e; font-weight: 700; flex-shrink: 0; }
-    .cross { color: #ccc; flex-shrink: 0; }
-
-    /* website input */
+    .tick { color: #22c55e; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
     .input-label {
-      font-size: 0.8rem; font-weight: 700; color: #888;
+      font-size: 0.75rem; font-weight: 700; color: #888;
       text-transform: uppercase; letter-spacing: 1px;
-      display: block; margin-bottom: 0.4rem;
+      display: block; margin-bottom: 0.35rem;
     }
     .site-input {
-      width: 100%; padding: 0.75rem 1rem;
+      width: 100%; padding: 0.65rem 0.9rem;
       border: 2px solid #e5e5e5; border-radius: 10px;
-      font-size: 1rem; color: #111; outline: none;
-      transition: border-color .2s; margin-bottom: 1rem;
-      background: #fafafa;
+      font-size: 0.95rem; color: #111; outline: none;
+      transition: border-color .2s; margin-bottom: 0.9rem;
+      background: #fafafa; font-family: inherit;
     }
     .site-input:focus { border-color: #7c6fff; background: #fff; }
     .site-input.err { border-color: #ef4444; }
-
     .plan-btn {
-      width: 100%; padding: 1rem;
+      width: 100%; padding: 0.85rem;
       border-radius: 12px; border: none; cursor: pointer;
-      font-size: 1.1rem; font-weight: 800;
-      transition: opacity .15s, transform .1s;
+      font-size: 0.95rem; font-weight: 800;
+      transition: opacity .15s, transform .1s; font-family: inherit;
     }
     .plan-btn:hover { opacity: 0.88; transform: translateY(-1px); }
     .btn-outline {
@@ -144,66 +220,134 @@
       box-shadow: 0 4px 16px rgba(124,111,255,0.35);
     }
 
-    /* ── One-time boost ── */
-    .boost-section {
-      background: #111; color: #fff;
-      padding: 3rem 5%;
+    /* ── Plan card extras ── */
+    .plan.best {
+      background: linear-gradient(160deg, #f5f3ff 0%, #fff 55%);
+      border-width: 2px;
     }
-    .boost-inner {
-      max-width: 600px; margin: 0 auto; text-align: center;
-    }
-    .boost-inner h2 { font-size: 2rem; font-weight: 900; margin-bottom: 0.5rem; }
-    .boost-inner p { font-size: 1rem; color: #aaa; margin-bottom: 2rem; }
+    .plan.second { border-color: #c4b5fd; }
 
+    .plan-price-wrapper {
+      display: flex; align-items: flex-end; gap: 0.75rem;
+      margin-bottom: 0.2rem;
+    }
+    .plan-price-aside {
+      display: flex; flex-direction: column; gap: 0.25rem;
+      padding-bottom: 0.35rem;
+    }
+    .plan-price-was {
+      font-size: 0.82rem; color: #bbb; text-decoration: line-through;
+    }
+    .plan-saving {
+      font-size: 0.72rem; font-weight: 800;
+      background: #dcfce7; color: #166534;
+      padding: 0.2rem 0.55rem; border-radius: 999px; white-space: nowrap;
+    }
+    .plan-inner-badge {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      font-size: 0.72rem; font-weight: 800;
+      padding: 0.2rem 0.65rem; border-radius: 999px;
+      margin-bottom: 0.5rem; width: fit-content;
+    }
+    .plan-inner-badge.purple { color: #7c6fff; background: #f0eeff; }
+    .plan-inner-badge.gold   { color: #92400e; background: #fef3c7; }
+
+    .plans-footnote {
+      text-align: center; font-size: 0.82rem; color: #999;
+      margin-top: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;
+    }
+
+    /* ── SEO Explainer (dark cards) ── */
+    .seo-explainer {
+      padding: 3.5rem 5%;
+      background: #111; color: #fff;
+    }
+    .seo-explainer-inner { max-width: 1000px; margin: 0 auto; }
+    .seo-explainer h2 {
+      font-size: clamp(1.5rem, 3vw, 1.9rem);
+      font-weight: 900; margin-bottom: 0.5rem; text-align: center;
+    }
+    .seo-explainer .seo-lead {
+      text-align: center; color: #888; font-size: 1rem; margin-bottom: 2.5rem;
+    }
+    .seo-points {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    .seo-point {
+      background: #1a1a1a; border: 1px solid #2a2a2a;
+      border-radius: 14px; padding: 1.5rem;
+    }
+    .seo-point-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .seo-point h4 { font-size: 0.95rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; line-height: 1.4; }
+    .seo-point p { font-size: 0.85rem; color: #777; line-height: 1.65; }
+
+    /* ── Google Ads boost ── */
+    .boost-section {
+      background: #0d0d1a; color: #fff;
+      padding: 3.5rem 5%;
+      border-top: 1px solid #222;
+    }
+    .boost-inner { max-width: 660px; margin: 0 auto; }
+    .boost-inner h2 {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 900; margin-bottom: 0.5rem; text-align: center;
+    }
+    .boost-inner > p { font-size: 1rem; color: #888; margin-bottom: 0.6rem; text-align: center; }
+    .boost-subtext {
+      font-size: 0.85rem; color: #555;
+      background: #161616; border: 1px solid #2a2a2a;
+      border-radius: 8px; padding: 0.65rem 1rem;
+      margin-bottom: 1.75rem; text-align: center;
+    }
     .boost-box {
-      background: #1a1a2e; border: 2px solid #333;
+      background: #161625; border: 2px solid #2a2a40;
       border-radius: 16px; padding: 2rem;
-      text-align: left;
     }
     .boost-row { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-    .amt-wrap { position: relative; }
-    .amt-prefix {
-      position: absolute; left: 1rem; top: 50%;
-      transform: translateY(-50%); color: #888; font-size: 1rem;
-      pointer-events: none;
-    }
-    .amt-input { padding-left: 2.5rem; background: #111; color: #fff; border-color: #333; }
-    .amt-input:focus { border-color: #7c6fff; background: #0d0d1a; }
-    .amt-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-
     .boost-result {
-      background: #111; border: 1px solid #333;
+      background: #111; border: 1px solid #2a2a2a;
       border-radius: 10px; padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem; color: #aaa;
-      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1.5rem; font-size: 0.9rem; color: #888;
     }
-    .boost-result-num { font-size: 1.5rem; font-weight: 900; color: #a78bfa; }
+    .boost-result-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .boost-result-num { font-size: 1.6rem; font-weight: 900; color: #a78bfa; white-space: nowrap; }
+    .boost-result-note { font-size: 0.78rem; color: #444; margin-top: 0.4rem; }
+    .breakdown {
+      display: flex; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.82rem;
+    }
+    .breakdown-item {
+      flex: 1; background: #111; border: 1px solid #222;
+      border-radius: 8px; padding: 0.6rem 0.75rem; color: #666;
+    }
+    .breakdown-item strong { display: block; font-size: 1.05rem; color: #e5e5e5; }
 
     /* ── How it works ── */
     .how-section {
-      padding: 3rem 5%; background: #fff;
+      padding: 3.5rem 5%; background: #fff;
       border-top: 2px solid #eee;
     }
-    .how-inner { max-width: 900px; margin: 0 auto; }
-    .how-inner h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 2rem; text-align: center; }
+    .how-inner { max-width: 960px; margin: 0 auto; }
+    .how-inner h2 {
+      font-size: clamp(1.5rem, 3vw, 1.9rem);
+      font-weight: 900; margin-bottom: 2rem; text-align: center;
+    }
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
     }
     .step {
-      background: #f8f8f8; border-radius: 12px;
-      padding: 1.5rem; text-align: center;
+      background: #f8f8f8; border-radius: 14px;
+      padding: 1.5rem 1.25rem; text-align: center;
+      border: 2px solid #eee;
     }
-    .step-num {
-      font-size: 2rem; font-weight: 900; color: #7c6fff;
-      margin-bottom: 0.5rem;
-    }
-    .step h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
-    .step p  { font-size: 0.85rem; color: #666; }
+    .step-num { font-size: 1.8rem; font-weight: 900; color: #7c6fff; margin-bottom: 0.5rem; }
+    .step h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 0.4rem; line-height: 1.4; }
+    .step p { font-size: 0.85rem; color: #666; line-height: 1.6; }
 
-    /* ── Slider mobile ── */
+    /* ── Slider ── */
     input[type=range] {
       -webkit-appearance: none; appearance: none;
       width: 100%; height: 8px; border-radius: 999px; outline: none; cursor: pointer;
@@ -220,149 +364,280 @@
       background: #7c6fff; cursor: pointer;
     }
 
+    /* ── Footer ── */
+    footer {
+      background: #111; color: #555;
+      padding: 2rem 5%; text-align: center; font-size: 0.85rem;
+    }
+    footer span { color: #a78bfa; font-weight: 700; }
+    .footer-links {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .footer-links a { color: #666; text-decoration: none; font-size: 0.85rem; transition: color .15s; }
+    .footer-links a:hover { color: #aaa; }
+
+    /* ── Tablet ── */
+    @media (max-width: 960px) {
+      .plans { grid-template-columns: repeat(2, 1fr); }
+      .seo-points { grid-template-columns: repeat(2, 1fr); }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .explain-steps { grid-template-columns: repeat(3, 1fr); }
+    }
+
     /* ── Mobile ── */
     @media (max-width: 600px) {
       body { font-size: 16px; }
-      header { padding: 1rem 4%; }
+      header { padding: 0.9rem 4%; }
+      .site-nav { order: 3; width: 100%; justify-content: flex-start; gap: 1.25rem; padding-top: 0.25rem; }
       .hero { padding: 2.5rem 4% 2rem; }
-      .plans-section { padding: 2rem 4%; }
+      .plain-explain { padding: 2.5rem 4%; }
+      .explain-steps { grid-template-columns: 1fr; gap: 1rem; }
+      .plans-section { padding: 2.5rem 4% 2rem; }
+      .plans { grid-template-columns: 1fr; }
       .plan { padding: 1.5rem; }
-      .plan-price { font-size: 2.8rem; }
-      .boost-section { padding: 2rem 4%; }
+      .plan-price { font-size: 2.6rem; }
+      .seo-explainer { padding: 2.5rem 4%; }
+      .seo-points { grid-template-columns: 1fr; }
+      .boost-section { padding: 2.5rem 4%; }
       .boost-box { padding: 1.25rem; }
-      .boost-inner h2 { font-size: 1.5rem; }
-      .boost-result { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
-      .boost-result-num { font-size: 1.8rem; }
-      .how-section { padding: 2rem 4%; }
+      .boost-result-row { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+      .breakdown { flex-direction: column; }
+      .how-section { padding: 2.5rem 4%; }
       .steps { grid-template-columns: 1fr 1fr; }
       input[type=range]::-webkit-slider-thumb { width: 40px; height: 40px; }
     }
-    @media (max-width: 380px) {
+    @media (max-width: 400px) {
       .steps { grid-template-columns: 1fr; }
+      .hero-badges { gap: 0.5rem; }
     }
-
-    /* ── Footer ── */
-    footer {
-      background: #111; color: #666;
-      padding: 1.5rem 5%; text-align: center;
-      font-size: 0.85rem;
-    }
-    footer span { color: #a78bfa; font-weight: 700; }
   </style>
 </head>
 <body>
 
 <!-- Header -->
 <header>
-  <div class="logo">Exalt <span>Digital</span></div>
+  <div class="logo"><a href="/">Exalt <span>Digital</span></a></div>
+  <nav class="site-nav">
+    <a href="/about.html">About</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/contact.html">Contact</a>
+  </nav>
+  <nav class="header-nav" id="header-nav">
+    <a href="/login.html" class="header-btn header-btn-outline">Sign in</a>
+  </nav>
 </header>
 
 <!-- Hero -->
 <div class="hero">
-  <h1>Get more people<br><span>viewing your website.</span></h1>
-  <p>We do all the work. More people will find and visit your website — starting this week.</p>
+  <h1>More people finding<br><span>your website on Google.</span></h1>
+  <p>Every month we improve your site so it shows up in more searches. No lock-in contracts. Plain English updates. Real, ongoing work.</p>
+  <div class="hero-badges">
+    <span class="hero-badge">Monthly SEO</span>
+    <span class="hero-badge">Google Ads campaigns</span>
+    <span class="hero-badge">Cancel any time</span>
+    <span class="hero-badge">Australian business</span>
+  </div>
 </div>
 
-<!-- Plans -->
+<!-- Plain English explainer -->
+<div class="plain-explain">
+  <div class="plain-explain-inner">
+    <h2>Is your website <span>invisible on Google?</span></h2>
+    <p class="lead">Most small business websites don't show up when people search Google — not because the business isn't good, but because Google doesn't know enough about them yet. That's exactly what we fix.</p>
+    <div class="explain-steps">
+      <div class="explain-step">
+        <div class="explain-step-icon">&#128270;</div>
+        <h3>Right now, Google may not know your site</h3>
+        <p>Think of Google as a giant library. If your site isn't set up correctly, it's like having a book with no title, no category, and no shelf. Nobody finds it — even if it's great.</p>
+      </div>
+      <div class="explain-step">
+        <div class="explain-step-icon">&#128295;</div>
+        <h3>Every month, we make it clearer</h3>
+        <p>We do the behind-the-scenes work that helps Google understand what your business does, who it's for, and why it should show up when someone searches for it.</p>
+      </div>
+      <div class="explain-step">
+        <div class="explain-step-icon">&#128200;</div>
+        <h3>Over time, more people find you</h3>
+        <p>As Google gets a better picture of your site, it starts showing it to more people. The results build slowly — but they stick around and keep growing.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Monthly Plans -->
 <div class="plans-section">
-  <h2>Pick a plan</h2>
-  <p>All plans include a free check of your website. No lock-in contracts. Cancel any time.</p>
+  <h2>Simple monthly plans</h2>
+  <p>We work on your site every month. Pick the level that suits your budget.</p>
+
+  <div class="plans-note">
+    All plans are month-to-month &mdash; no lock-in, no hidden fees. Work starts within 24 hours.
+  </div>
 
   <div class="plans">
 
     <!-- Starter -->
     <div class="plan">
       <div class="plan-name">Starter</div>
-      <div class="plan-price"><sup>A$</sup>50</div>
-      <div class="plan-per">per month</div>
-      <div class="plan-what">Good for brand new websites</div>
+      <div class="plan-price"><sup>A$</sup>100</div>
+      <div class="plan-per">per month &middot; cancel any time</div>
+      <div class="plan-what">Get your site set up properly for Google</div>
       <ul class="plan-features">
-        <li><span class="tick">✓</span> Free check of your website</li>
-        <li><span class="tick">✓</span> We make your site show up for 10 search terms</li>
-        <li><span class="tick">✓</span> 5 pages improved</li>
-        <li><span class="tick">✓</span> Your business added to Google Maps</li>
-        <li><span class="tick">✓</span> Monthly report in plain English</li>
-        <li><span class="cross">✗</span> Getting other sites to mention you</li>
-        <li><span class="cross">✗</span> Articles written for your site</li>
+        <li><span class="tick">✓</span> Check your whole site and find what's holding it back</li>
+        <li><span class="tick">✓</span> Fix issues that stop Google from reading your site</li>
+        <li><span class="tick">✓</span> Set up your pages to appear in the right searches</li>
+        <li><span class="tick">✓</span> Improve your key pages so more people can find them</li>
+        <li><span class="tick">✓</span> Monthly update on what was done — plain English</li>
       </ul>
       <label class="input-label">Your website address</label>
       <input type="text" class="site-input" placeholder="e.g. www.mywebsite.com.au" />
-      <button class="plan-btn btn-outline">Start for A$50/month</button>
+      <button class="plan-btn btn-outline" data-price="100">Get started &mdash; A$100/mo</button>
     </div>
 
     <!-- Growth -->
-    <div class="plan">
+    <div class="plan second">
+      <div class="plan-inner-badge purple">&#11088; Exceptional value</div>
       <div class="plan-name">Growth</div>
-      <div class="plan-price"><sup>A$</sup>100</div>
-      <div class="plan-per">per month</div>
-      <div class="plan-what">Good for established businesses</div>
+      <div class="plan-price"><sup>A$</sup>200</div>
+      <div class="plan-per">per month &middot; cancel any time</div>
+      <div class="plan-what">Full ongoing SEO for less than $7 a day</div>
       <ul class="plan-features">
         <li><span class="tick">✓</span> Everything in Starter</li>
-        <li><span class="tick">✓</span> We make your site show up for 30 search terms</li>
-        <li><span class="tick">✓</span> 15 pages improved</li>
-        <li><span class="tick">✓</span> 3 other websites mention yours each month</li>
-        <li><span class="tick">✓</span> 1 article written for your site each month</li>
-        <li><span class="tick">✓</span> We keep an eye on your competition</li>
-        <li><span class="cross">✗</span> Your own personal manager</li>
+        <li><span class="tick">✓</span> Monthly on-page optimisation across your entire site</li>
+        <li><span class="tick">✓</span> Keyword expansion — target more search queries over time</li>
+        <li><span class="tick">✓</span> Internal linking improvements to boost page authority</li>
+        <li><span class="tick">✓</span> Performance-based adjustments every month</li>
       </ul>
       <label class="input-label">Your website address</label>
       <input type="text" class="site-input" placeholder="e.g. www.mywebsite.com.au" />
-      <button class="plan-btn btn-outline">Start for A$100/month</button>
+      <button class="plan-btn btn-outline" data-price="200">Get started &mdash; A$200/mo</button>
     </div>
 
-    <!-- Rocket -->
+    <!-- Pro -->
     <div class="plan best">
-      <div class="best-tag">Most Popular</div>
-      <div class="plan-name">Rocket</div>
-      <div class="plan-price"><sup>A$</sup>200</div>
-      <div class="plan-per">per month</div>
-      <div class="plan-what">Best results — everything included</div>
+      <div class="best-tag">&#11088; Best Seller &middot; Most Popular</div>
+      <div class="plan-inner-badge gold">Limited price &mdash; was A$600</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price-wrapper">
+        <div class="plan-price"><sup>A$</sup>400</div>
+        <div class="plan-price-aside">
+          <div class="plan-price-was">A$600/mo</div>
+          <div class="plan-saving">&#10003; Save A$200/mo</div>
+        </div>
+      </div>
+      <div class="plan-per">per month &middot; cancel any time</div>
+      <div class="plan-what">Agency-level SEO for A$13 a day — this is the one</div>
       <ul class="plan-features">
         <li><span class="tick">✓</span> Everything in Growth</li>
-        <li><span class="tick">✓</span> Your site shows up for as many searches as possible</li>
-        <li><span class="tick">✓</span> Every page on your site improved</li>
-        <li><span class="tick">✓</span> 15 other websites mention yours each month</li>
-        <li><span class="tick">✓</span> 4 articles written for your site each month</li>
-        <li><span class="tick">✓</span> Your business featured on news websites</li>
-        <li><span class="tick">✓</span> Your own personal manager you can call</li>
+        <li><span class="tick">✓</span> High-volume on-page and technical SEO every month</li>
+        <li><span class="tick">✓</span> Aggressive keyword expansion across your entire site</li>
+        <li><span class="tick">✓</span> Opportunity-driven optimisation — we don't wait, we act</li>
+        <li><span class="tick">✓</span> Priority queue — your site is always worked on first</li>
+        <li><span class="tick">✓</span> Full monthly audit: rankings, changes, next 30-day plan</li>
       </ul>
       <label class="input-label">Your website address</label>
       <input type="text" class="site-input" placeholder="e.g. www.mywebsite.com.au" />
-      <button class="plan-btn btn-fill">Start for A$200/month</button>
+      <button class="plan-btn btn-fill" data-price="400">Get started &mdash; A$400/mo</button>
+    </div>
+
+    <!-- Authority -->
+    <div class="plan">
+      <div class="plan-name">Authority</div>
+      <div class="plan-price-wrapper">
+        <div class="plan-price"><sup>A$</sup>600</div>
+        <div class="plan-price-aside">
+          <div class="plan-price-was">A$800/mo</div>
+          <div class="plan-saving">&#10003; Save A$200/mo</div>
+        </div>
+      </div>
+      <div class="plan-per">per month &middot; cancel any time</div>
+      <div class="plan-what">Maximum effort to dominate your niche in search</div>
+      <ul class="plan-features">
+        <li><span class="tick">✓</span> Everything in Pro</li>
+        <li><span class="tick">✓</span> The highest level of monthly SEO work we offer</li>
+        <li><span class="tick">✓</span> First in our queue — fastest turnaround</li>
+        <li><span class="tick">✓</span> Aggressive expansion into every relevant search</li>
+        <li><span class="tick">✓</span> Built for businesses that want to be the top result</li>
+      </ul>
+      <label class="input-label">Your website address</label>
+      <input type="text" class="site-input" placeholder="e.g. www.mywebsite.com.au" />
+      <button class="plan-btn btn-outline" data-price="600">Get started &mdash; A$600/mo</button>
     </div>
 
   </div>
+
+  <p class="plans-footnote">
+    After sign-up we review your site and get started. You'll hear from us within 24 hours.
+  </p>
 </div>
 
-<!-- One-time boost -->
+<!-- SEO explainer (dark) -->
+<div class="seo-explainer">
+  <div class="seo-explainer-inner">
+    <h2>Why SEO takes time — and why it's worth it</h2>
+    <p class="seo-lead">A few honest things you should know before getting started.</p>
+    <div class="seo-points">
+      <div class="seo-point">
+        <div class="seo-point-icon">&#128270;</div>
+        <h4>Google has to be able to read your site first</h4>
+        <p>Before you can appear in search results, Google needs to understand your pages. We fix the technical issues that get in the way — things most people never even know exist.</p>
+      </div>
+      <div class="seo-point">
+        <div class="seo-point-icon">&#127919;</div>
+        <h4>Your site needs to match what people actually search</h4>
+        <p>We look at the real words and phrases people type into Google, then make sure your pages are aligned with those searches — so Google has a reason to show your site.</p>
+      </div>
+      <div class="seo-point">
+        <div class="seo-point-icon">&#128200;</div>
+        <h4>Every improvement builds on the last one</h4>
+        <p>Unlike ads, SEO work sticks around. Each month we build on what was done before. The effect compounds — after 6 months, your site is noticeably more visible than it was on day one.</p>
+      </div>
+      <div class="seo-point">
+        <div class="seo-point-icon">&#128337;</div>
+        <h4>Results usually take 3–6 months — and that's normal</h4>
+        <p>We'll be straight with you: SEO is not fast. But the sites that stay consistent are the ones that end up being found by far more people. We do the work every month so you don't have to think about it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- One-time Google Ads boost -->
 <div class="boost-section">
   <div class="boost-inner">
-    <h2>Just want a one-off boost?</h2>
-    <p>Pay once, no subscription. We get to work straight away and more people will start visiting your site within 24 hours.</p>
+    <h2>Need visitors right now?</h2>
+    <p>While your SEO builds up, a one-time Google Ads campaign puts your site in front of real searchers immediately.</p>
+    <div class="boost-subtext">
+      &#128640; Most of your budget goes directly to Google Ads — we just set it all up and run it for you.
+    </div>
     <div class="boost-box">
       <div class="boost-row">
         <div>
-          <label class="input-label" style="color:#888;">Your website address</label>
-          <input type="text" class="site-input" id="boost-site" placeholder="e.g. www.mywebsite.com.au" />
+          <label class="input-label" style="color:#777;">Your website address</label>
+          <input type="text" class="site-input" id="boost-site" placeholder="e.g. www.mywebsite.com.au" style="background:#0d0d1a;border-color:#2a2a40;color:#fff;" />
         </div>
         <div>
-          <label class="input-label" style="color:#888;">How much do you want to spend? (AUD)</label>
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.6rem;flex-wrap:wrap;">
-            <div style="font-size:1.8rem;font-weight:900;color:#a78bfa;">A$<span id="boost-display">150</span></div>
-            <div id="boost-deal" style="font-size:0.82rem;font-weight:700;padding:0.3rem 0.8rem;border-radius:999px;background:#2a2a3d;color:#aaa;"></div>
+          <label class="input-label" style="color:#777;">Your campaign budget (AUD)</label>
+          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+            <div style="font-size:2rem;font-weight:900;color:#a78bfa;">A$<span id="boost-display">300</span></div>
+            <div style="font-size:0.82rem;color:#555;">total budget</div>
           </div>
-          <input type="range" id="boost-amount" min="10" max="2000" value="150" step="10"
-            style="background:linear-gradient(90deg,#7c6fff 15%,rgba(255,255,255,0.1) 15%);margin-bottom:0.5rem;" />
-          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:#666;">
-            <span>A$10</span><span>A$500</span><span>A$1,000</span><span>A$2,000</span>
+          <input type="range" id="boost-amount" min="10" max="1500" value="300" step="10"
+            style="background:linear-gradient(90deg,#7c6fff 13%,rgba(255,255,255,0.07) 13%);margin-bottom:0.5rem;" />
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:#444;">
+            <span>A$10</span><span>A$500</span><span>A$1,000</span><span>A$1,500</span>
           </div>
         </div>
       </div>
+
       <div class="boost-result">
-        <span>Estimated new people visiting your site</span>
-        <span class="boost-result-num" id="boost-visitors">37,500</span>
+        <div class="boost-result-row">
+          <span>Estimated new visitors to your site</span>
+          <span class="boost-result-num" id="boost-visitors">30</span>
+        </div>
+        <div class="boost-result-note">Estimates only. Actual results vary by industry, keywords, and location.</div>
       </div>
-      <button class="plan-btn btn-fill" id="boost-btn">Pay Once & Get My Boost</button>
+
+      <button class="plan-btn btn-fill" id="boost-btn" style="font-size:1rem;">Launch My Google Ads Campaign &rarr;</button>
     </div>
   </div>
 </div>
@@ -374,169 +649,231 @@
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <h4>We check your site</h4>
-        <p>We find every reason Google might be ignoring your website.</p>
+        <h4>Choose a plan and enter your website</h4>
+        <p>Takes less than two minutes. No phone call, no consultation required.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h4>We fix everything</h4>
-        <p>We update your pages so Google understands exactly what you offer.</p>
+        <h4>We look at your site within 24 hours</h4>
+        <p>We review your site and figure out the best starting points based on your plan.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <h4>We build your reputation</h4>
-        <p>We get other trusted websites to mention and link to yours.</p>
+        <h4>Work starts and repeats every month</h4>
+        <p>Real improvements, every month — no skipped months, no "set and forget".</p>
       </div>
       <div class="step">
         <div class="step-num">4</div>
-        <h4>More people visit your site</h4>
-        <p>More people find you on Google and click through to your site. You get a plain-English report every month.</p>
+        <h4>You get a plain English update</h4>
+        <p>We tell you exactly what we did, what changed, and what we're doing next. No confusion.</p>
       </div>
     </div>
   </div>
 </div>
 
 <footer>
+  <div class="footer-links">
+    <a href="/about.html">About</a>
+    <a href="/faq.html">FAQ</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/dashboard.html">My orders</a>
+  </div>
   &copy; 2026 <span>Exalt Digital</span>. All rights reserved.
 </footer>
 
 <script>
-  // ── Stripe payment links ──────────────────────────────────
-  var planLinks = {
-    '50':  'https://buy.stripe.com/7sY5kE3y80RT7SR7Od67S00',
-    '100': 'https://buy.stripe.com/cNi6oI9WweIJ1utd8x67S01',
-    '200': 'https://buy.stripe.com/dRm4gA7Oo5897SR8Sh67S02'
-  };
+  var cfg = window.ExaltConfig
+  var sb  = window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey)
 
-  // ── Visitor estimate ──────────────────────────────────────
-  var boostAmt     = document.getElementById('boost-amount');
-  var boostVis     = document.getElementById('boost-visitors');
-  var boostDisplay = document.getElementById('boost-display');
-  var boostDeal    = document.getElementById('boost-deal');
+  // ── Auth state → update header nav ───────────────────────────
+  var currentUser = null
 
-  // Rate per dollar increases with spend — better deal the more you spend
-  function ratePerDollar(n) {
-    return 20 + (n / 2000) * 50; // $10 = 20/dollar, $2000 = 70/dollar
+  sb.auth.getSession().then(function(r) {
+    currentUser = r.data.session ? r.data.session.user : null
+    renderNav()
+    if (currentUser) {
+      var siteUrl = currentUser.user_metadata && currentUser.user_metadata.site_url
+      // Replace site input + label on plan cards with a static "ordering for" chip
+      document.querySelectorAll('.plan').forEach(function(card) {
+        var label = card.querySelector('.input-label')
+        var inp   = card.querySelector('.site-input')
+        if (!label || !inp) return
+        if (siteUrl) {
+          var chip = document.createElement('div')
+          chip.style.cssText = 'font-size:0.8rem;color:#7c6fff;background:#f0eeff;border-radius:8px;padding:0.45rem 0.75rem;margin-bottom:0.9rem;font-weight:600;'
+          chip.textContent = '↗ ' + siteUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
+          label.parentNode.insertBefore(chip, label)
+          label.remove()
+          inp.remove()
+        } else {
+          // No site set — update label to prompt them
+          label.textContent = 'Your website (save in dashboard to skip this next time)'
+        }
+      })
+      // Boost section: show site chip or pre-fill input
+      var boostSiteInp = document.getElementById('boost-site')
+      if (boostSiteInp) {
+        if (siteUrl) {
+          var boostLabel = boostSiteInp.previousElementSibling
+          var boostChip = document.createElement('div')
+          boostChip.style.cssText = 'font-size:0.8rem;color:#a78bfa;background:rgba(167,139,250,0.12);border-radius:8px;padding:0.45rem 0.75rem;margin-bottom:0.9rem;font-weight:600;'
+          boostChip.textContent = '↗ ' + siteUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '')
+          boostSiteInp.parentNode.insertBefore(boostChip, boostLabel || boostSiteInp)
+          if (boostLabel && boostLabel.classList && boostLabel.classList.contains('input-label')) boostLabel.remove()
+          boostSiteInp.remove()
+        } else {
+          boostSiteInp.value = ''
+        }
+      }
+    }
+  })
+
+  function renderNav() {
+    var nav = document.getElementById('header-nav')
+    if (currentUser) {
+      var siteUrl = currentUser.user_metadata && currentUser.user_metadata.site_url
+      var siteChip = siteUrl ? '<a href="' + (siteUrl.startsWith('http') ? siteUrl : 'https://' + siteUrl) + '" target="_blank" rel="noopener" class="header-btn header-btn-outline" style="color:#a78bfa;border-color:#4c3f8a;">' + siteUrl.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '') + ' ↗</a>' : ''
+      nav.innerHTML = siteChip + '<a href="/dashboard.html" class="header-btn header-btn-outline">My orders</a>'
+    } else {
+      nav.innerHTML = '<a href="/login.html" class="header-btn header-btn-outline">Sign in</a>'
+        + '<a href="/login.html" class="header-btn header-btn-fill">Get started</a>'
+    }
   }
+
+  // ── Click estimate ─────────────────────────────────────────────
   function calcVisitors(n) {
-    return Math.round(n * ratePerDollar(n) / 10) * 10;
+    // Optimistic estimate: ~$0.67 effective CPC, rounded to nearest 5
+    return Math.round(n * 3 / 2 / 5) * 5
   }
 
-  function updateDeal(n) {
-    var rate = Math.round(ratePerDollar(n));
-    var label, bg, color;
-    if (n < 50)        { label = 'Standard — ' + rate + ' visitors per A$1';      bg = '#1e1e2e'; color = '#888'; }
-    else if (n < 200)  { label = 'Good deal — ' + rate + ' visitors per A$1';     bg = '#1a2035'; color = '#60a5fa'; }
-    else if (n < 500)  { label = 'Great deal — ' + rate + ' visitors per A$1';    bg = '#1a2d20'; color = '#22c55e'; }
-    else if (n < 1000) { label = 'Excellent — ' + rate + ' visitors per A$1';     bg = '#2a1f10'; color = '#f59e0b'; }
-    else               { label = '🔥 Best value — ' + rate + ' visitors per A$1'; bg = '#2a1030'; color = '#a78bfa'; }
-    boostDeal.textContent = label;
-    boostDeal.style.background = bg;
-    boostDeal.style.color = color;
+  var boostAmt     = document.getElementById('boost-amount')
+  var boostVis     = document.getElementById('boost-visitors')
+  var boostDisplay = document.getElementById('boost-display')
+
+  function updateBoostDisplay(n) {
+    boostDisplay.textContent = n.toLocaleString()
+    boostVis.textContent     = calcVisitors(n).toLocaleString()
+    var pct = Math.round(((n - 10) / (1500 - 10)) * 100)
+    boostAmt.style.background = 'linear-gradient(90deg,#7c6fff ' + pct + '%,rgba(255,255,255,0.07) ' + pct + '%)'
   }
 
-  boostAmt.addEventListener('input', function() {
-    var n = parseInt(this.value) || 10;
-    boostDisplay.textContent = n.toLocaleString();
-    boostVis.textContent = calcVisitors(n).toLocaleString();
-    updateDeal(n);
-    var pct = Math.round(((n - 10) / (2000 - 10)) * 100);
-    this.style.background = 'linear-gradient(90deg,#7c6fff ' + pct + '%,rgba(255,255,255,0.1) ' + pct + '%)';
-  });
+  boostAmt.addEventListener('input', function() { updateBoostDisplay(parseInt(this.value) || 100) })
+  updateBoostDisplay(300)
 
-  updateDeal(150);
-
-  // ── Require website field ─────────────────────────────────
-  function requireSite(inp) {
-    if (inp.value.trim()) return true;
-    inp.classList.add('err');
-    inp.placeholder = 'Please enter your website first';
-    inp.focus();
-    setTimeout(function(){ inp.classList.remove('err'); inp.placeholder = 'e.g. www.mywebsite.com.au'; }, 2500);
-    return false;
+  // ── Field validation ───────────────────────────────────────────
+  function requireField(inp, msg) {
+    if (inp.value.trim()) return true
+    inp.classList.add('err')
+    var orig = inp.placeholder
+    inp.placeholder = msg || 'This field is required'
+    inp.focus()
+    setTimeout(function() { inp.classList.remove('err'); inp.placeholder = orig }, 2500)
+    return false
   }
 
-  // ── Monthly plan buttons ──────────────────────────────────
-  document.querySelectorAll('.plan-btn:not(#boost-btn)').forEach(function(btn) {
+  // ── Monthly plan buttons ───────────────────────────────────────
+  document.querySelectorAll('.plan-btn[data-price]').forEach(function(btn) {
     btn.addEventListener('click', function() {
-      var inp = this.closest('.plan').querySelector('.site-input');
-      if (!requireSite(inp)) return;
-      var match = this.textContent.match(/A\$(\d+)/);
-      if (match && planLinks[match[1]]) window.location.href = planLinks[match[1]];
-    });
-  });
+      var price = this.getAttribute('data-price')
 
-  // ── Auto-fill boost site from localStorage ───────────────
-  var boostSiteInp = document.getElementById('boost-site');
-  var savedSite = localStorage.getItem('exalt_boost_site');
-  if (savedSite) boostSiteInp.value = savedSite;
-  boostSiteInp.addEventListener('input', function() {
-    if (this.value.trim()) localStorage.setItem('exalt_boost_site', this.value.trim());
-  });
+      // Require login first
+      if (!currentUser) {
+        window.location.href = '/login.html'
+        return
+      }
 
-  // ── One-time boost button ─────────────────────────────────
-  document.getElementById('boost-btn').addEventListener('click', function() {
-    var siteInp = document.getElementById('boost-site');
-    var amt = parseInt(boostAmt.value) || 10;
-    if (!requireSite(siteInp)) return;
+      // Get site URL from account or fallback to visible input
+      var siteUrl = currentUser.user_metadata && currentUser.user_metadata.site_url
+      if (!siteUrl) {
+        var inp = this.closest('.plan').querySelector('.site-input')
+        if (inp) {
+          if (!requireField(inp, 'Please enter your website address')) return
+          siteUrl = inp.value.trim()
+          // Save it to their account for next time
+          sb.auth.updateUser({ data: { site_url: siteUrl } })
+        }
+      }
 
-    var btn = this;
-    btn.textContent = 'Redirecting to payment…';
-    btn.disabled = true;
+      var link = cfg.stripe['plan' + price]
+      if (!link || link.indexOf('REPLACE') !== -1) {
+        alert('Payment links not set up yet. Please update config.js with your Stripe links.')
+        return
+      }
 
-    fetch('https://gczopudgxfciatvtxhll.supabase.co/functions/v1/dynamic-api', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: amt, siteUrl: siteInp.value.trim(), visitors: calcVisitors(amt) })
+      // Pass user ID and prefill email so the webhook can link the order
+      var url = link
+        + '?client_reference_id=' + encodeURIComponent(currentUser.id)
+        + '&prefilled_email='     + encodeURIComponent(currentUser.email)
+      window.location.href = url
     })
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      if (data.url) {
-        window.location.href = data.url;
+  })
+
+  // ── One-time boost button ──────────────────────────────────────
+  document.getElementById('boost-btn').addEventListener('click', async function() {
+    // Require login
+    if (!currentUser) {
+      window.location.href = '/login.html'
+      return
+    }
+
+    var meta     = currentUser.user_metadata || {}
+    var siteUrl  = meta.site_url || ''
+    var keywords = meta.keywords || ''
+    var location = meta.location || ''
+    var amt      = parseInt(boostAmt.value) || 10
+
+    // If no site on account, fall back to the visible input
+    if (!siteUrl) {
+      var siteInp = document.getElementById('boost-site')
+      if (!siteInp || !requireField(siteInp, 'Please enter your website address')) return
+      siteUrl = siteInp.value.trim()
+    }
+
+    var btn = this
+    btn.textContent = 'Redirecting to payment…'
+    btn.disabled = true
+
+    var checkoutUrl = cfg.supabase.url + '/functions/v1/create-checkout'
+
+    fetch(checkoutUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.supabase.anonKey },
+      body: JSON.stringify({
+        amount:   amt,
+        siteUrl:  siteUrl,
+        keywords: keywords,
+        location: location,
+        userId:   currentUser.id,
+      }),
+    })
+    .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, data: d } }) })
+    .then(function(res) {
+      if (res.data.url) {
+        window.location.href = res.data.url
       } else {
-        btn.textContent = 'Pay Once & Get My Boost';
-        btn.disabled = false;
-        alert('Something went wrong: ' + JSON.stringify(data));
+        btn.textContent = 'Launch My Google Ads Campaign →'
+        btn.disabled = false
+        console.error('Checkout error:', res.status, res.data)
+        alert('Error ' + res.status + ': ' + (res.data.error || res.data.message || JSON.stringify(res.data)))
       }
     })
-    .catch(function(err){
-      btn.textContent = 'Pay Once & Get My Boost';
-      btn.disabled = false;
-      alert('Request failed: ' + err.message);
-    });
-  });
+    .catch(function() {
+      btn.textContent = 'Launch My Google Ads Campaign →'
+      btn.disabled = false
+      alert('Request failed. Please try again.')
+    })
+  })
 
-  // ── Log boost on return from Stripe ──────────────────────
-  var params = new URLSearchParams(window.location.search);
+  // ── Success banner after payment ───────────────────────────────
+  var params = new URLSearchParams(window.location.search)
   if (params.get('boost') === 'success') {
-    var successSite = params.get('site') || 'unknown';
-    var successAmt  = parseFloat(params.get('amount')) || 0;
-    var successVis  = parseInt(params.get('visitors')) || 0;
-
-    fetch('https://gczopudgxfciatvtxhll.supabase.co/rest/v1/boosts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjem9wdWRneGZjaWF0dnR4aGxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NzgwMzgsImV4cCI6MjA5MTU1NDAzOH0.Qc4hAZ0AqFAgNcPcRkNk2SUvs4uR2hwk9m2JeZ7lIV0',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjem9wdWRneGZjaWF0dnR4aGxsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NzgwMzgsImV4cCI6MjA5MTU1NDAzOH0.Qc4hAZ0AqFAgNcPcRkNk2SUvs4uR2hwk9m2JeZ7lIV0',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({
-        site_url: successSite,
-        amount: successAmt,
-        visitors_target: successVis
-      })
-    });
-
-    // Show success banner
-    var banner = document.createElement('div');
-    banner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#22c55e;color:#fff;text-align:center;padding:1.2rem 1rem;font-size:1.1rem;font-weight:700;z-index:9999;box-shadow:0 2px 12px rgba(0,0,0,0.3);';
-    banner.innerHTML = '&#10003; Payment successful — your SEO boost for <strong>' + successSite + '</strong> is on its way!'
-      + (successVis ? ' Expect ~' + Number(successVis).toLocaleString() + ' new visitors.' : '')
-      + ' <span style="cursor:pointer;margin-left:1rem;opacity:0.7;" onclick="this.parentNode.remove()">&#10005;</span>';
-    document.body.prepend(banner);
-
-    history.replaceState({}, '', '/');
+    var successSite = params.get('site') || 'your site'
+    var banner = document.createElement('div')
+    banner.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#22c55e;color:#fff;text-align:center;padding:1.2rem 1rem;font-size:1.1rem;font-weight:700;z-index:9999;box-shadow:0 2px 12px rgba(0,0,0,0.3);'
+    banner.innerHTML = '&#10003; Payment received! Your Google Ads campaign for <strong>' + successSite + '</strong> will be live within 24 hours. Check your email for confirmation.'
+      + ' <span style="cursor:pointer;margin-left:1rem;opacity:0.7;" onclick="this.parentNode.remove()">&#10005;</span>'
+    document.body.prepend(banner)
+    history.replaceState({}, '', '/')
   }
 </script>
 </body>
